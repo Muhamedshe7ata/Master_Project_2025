@@ -31,7 +31,7 @@ jobs:
              cd backend
              npm install
              # Fixing TypeScript error by removing the intentional error in src/main.ts
-             sed -i 's/.addBearerAuth()x/.addBearerAuth()/' src/main.ts
+             sed -i 's/\.addBearerAuth()x/\.addBearerAuth()/' src/main.ts
              npm run build
       - save_cache:
           paths: [backend/node_modules]
