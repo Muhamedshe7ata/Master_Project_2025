@@ -101,11 +101,7 @@ jobs:
              cd backend
              npm install
              npm  test
-          command: |
-             
-             cd backend
-             npm install
-             npm test
+    
  
             
 #   scan-frontend:
