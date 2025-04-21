@@ -1,5 +1,4 @@
 version: 2.1
-
 jobs:
   build-frontend:
     docker:
@@ -28,17 +27,47 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             cd backend
-             npm install
-             # Fixing TypeScript error by removing the intentional error in src/main.ts
-             sed -i 's/\.addBearerAuth()x/\.addBearerAuth()/' src/main.ts
-             npm run build
+            cd backend
+            npm install
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deps
+
+  test-frontend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-deps]
+      - run:
+          name: Front-end unit test
+          command: |
+            cd frontend
+            npm install
+            npm test
+
+  test-backend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-deps]
+      - run:
+          name: Back-end unit test
+          command: |
+            cd backend
+            npm install
+            npm test
 
 workflows:
   default:
     jobs:
       - build-frontend
       - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
